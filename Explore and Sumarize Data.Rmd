@@ -1,0 +1,565 @@
+---
+title: 'P4: Explore and Sumarize Data'
+author: "David Gonzalez Cagigas"
+date: "7 Februar 2017"
+output: html_document
+---
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+#
+#install.packages("ggplot2", dependencies = T) 
+#install.packages("knitr", dependencies = T)
+#install.packages("dplyr", dependencies = T)
+#install.packages('gridExtra') 
+
+library(gridExtra) 
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+```
+First of all, we will load the data set Red Wine into pf, and see some basic information.
+```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data}
+
+pf <- read.csv('wineQualityReds.csv')# Load the Data
+
+names(pf[2:13])
+str(pf[2:13])
+summary(pf[2:13])
+
+```
+
+We can appreciate the variable names in the dataset, number of obervations, 
+number and type of variables and other basic statistic information about the 
+dataset. I have omitted the first variable as it is just the index.
+
+If we dive deeper, we see that there are 6 qualities (from 3 to 8), the alcohol
+degrees is between 8.40 and 14.90 degrees. Density vary from 0.9901 to 1.0037. 
+And 10 more variables. It will be intersting to see the pH concentration,
+alcohol or density depending on the quelity level.
+
+# Univariate Plots Section
+> In this section, you should perform some preliminary exploration of
+your dataset. Run some summaries of the data and create univariate plots to
+understand the structure of the individual variables in your dataset. Don't
+forget to add a comment after each plot or closely-related group of plots!
+There should be multiple code chunks and text sections; the first one below is
+just to help you get started.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+by(pf[2:13]$density, pf[2:13]$quality, median)
+by(pf[2:13]$alcohol, pf[2:13]$quality, median)
+by(pf[2:13]$pH, pf[2:13]$quality, median)
+
+qplot(factor(quality), data=pf[2:13], geom="bar")
+
+```
+As you can see, density and alcohol do not have a dependency on que quality of 
+the wines, however quality seems to improve when Ph mean decrease. It is useful 
+to know the number of observation for each quality.
+
+Histograms
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+grid.arrange( ggplot(aes(x=alcohol),data=pf[2:13]) +
+  geom_histogram( binwidth=0.1) + ggtitle("Histogram of Alcohol (%)"), ggplot(aes(x=1, y=alcohol),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+```
+Alcohol distribution is a right skewed, concentrated in 7.5. We can see a few 
+outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=total.sulfur.dioxide),data=pf[2:13]) +
+  geom_histogram( binwidth=10) + ggtitle("Histogram of total sulfur dioxide (mg/dm^3)"), ggplot(aes(x=1, y=total.sulfur.dioxide),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$total.sulfur.dioxide)
+```
+Sulfur Dioxide distribution is a right skewed, concentrated in 20. We can see
+multiples outliers, specially 2.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=fixed.acidity),data=pf[2:13]) +
+  geom_histogram( binwidth=0.5) + ggtitle("Histogram of fixed acidity (g/dm^3)"), ggplot(aes(x=1, y=fixed.acidity),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$fixed.acidity)
+
+```
+We can see the fixed acidity is a right skewed graphic concentred in 7. We can
+see multiple outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=volatile.acidity),data=pf[2:13]) +
+  geom_histogram( binwidth=0.01) + ggtitle("Histogram of volatile acidity (g/dm^3)"), ggplot(aes(x=1, y=volatile.acidity),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$volatile.acidity)
+
+```
+The distribution of volatile acidity is a bimodal right skewed, concentred in 
+0.35 and 0.6. There are a few outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=citric.acid),data=pf[2:13]) +
+  geom_histogram( binwidth=0.01) + ggtitle("Histogram of citric acid (g/dm^3)"), ggplot(aes(x=1, y=citric.acid),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$citric.acid)
+
+```
+Citrid Acid is a not normal distribution. Only an outlier.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=residual.sugar),data=pf[2:13]) +
+  geom_histogram( binwidth=0.1) + ggtitle("Histogram of residual sugar (g/dm^3)"), ggplot(aes(x=1, y=residual.sugar),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$residual.sugar)
+
+```
+Residual Sugar seems to be a right skewed distribution, concentrated in 2. 
+Several outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=chlorides),data=pf[2:13]) +
+  geom_histogram( binwidth=0.001) + ggtitle("Histogram of chlorides (g/dm^3)"), ggplot(aes(x=1, y=chlorides),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$chlorides)
+
+```
+Chloricles is right skewed distribution as well, concentrated in 0.08. Several
+outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=free.sulfur.dioxide),data=pf[2:13]) +
+  geom_histogram( binwidth=1) + ggtitle("Histogram of free sulfur dioxide (mg/dm^3)"), ggplot(aes(x=1, y=free.sulfur.dioxide),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$free.sulfur.dioxide)
+
+```
+Free Sulfur Dioxide is a right skewed distribution concentrated in 6. We can see
+a few outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=density),data=pf[2:13]) +
+  geom_histogram( binwidth=0.0001) + ggtitle("Histogram of density (g/cm^3)"), ggplot(aes(x=1, y=density),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$density)
+
+```
+We can see the density distribution is normal and concentrated in 0.997. We can
+see a few outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=sulphates),data=pf[2:13]) +
+  geom_histogram( binwidth=0.010) + ggtitle("Histogram of sulphates (g/dm^3)"), ggplot(aes(x=1, y=sulphates),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$sulphates)
+
+```
+Sulphates distribution is right skewed, concentrated in 0.6. Several outliers.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+grid.arrange( ggplot(aes(x=pH),data=pf[2:13]) +
+  geom_histogram( binwidth=0.010) + ggtitle("Histogram of pH"), ggplot(aes(x=1, y=pH),data=pf[2:13]) +
+  geom_boxplot( ), nrow =1)
+summary(pf[2:13]$pH)
+
+
+```
+pH distribution is normal concentrated in 3.3. We can appreciate a few outliers.
+
+We can see above a simple histogram for each feature included in the analysis.  
+Theses histograms help you to have an idea about the dataset. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+qplot(x = density, data = pf[2:13], binwidth = 0.0001)+ ##A line geometry
+    facet_wrap(~quality)+
+    geom_histogram()
+qplot(x = alcohol, data = pf[2:13], binwidth = 0.01)+ ##A line geometry
+    facet_wrap(~quality)+
+    geom_histogram()
+qplot(x = pH, data = pf[2:13], binwidth = 0.01)+ ##A line geometry
+    facet_wrap(~quality)+
+    geom_histogram()
+
+
+```
+
+We can appreciate that pH tend to have similar values between 3 and 3.5, 
+specially in quality 5, 6 and 7 the other qualities can not be appriciated due
+to lack of data. Density seems to have the same tendency, however alcohol
+have a flater graphs, where you can see a tendency in quality 5 (about 11 
+degrees), meanwhile quality 7 is between 9 and 13 or quality 6 is between
+8 and 13.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
+
+qplot(x = volatile.acidity, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
+qplot(x = fixed.acidity, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
+qplot(x = residual.sugar, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
+qplot(x = chlorides, data = pf[2:13], binwidth = 0.001, geom = "freqpoly")
+qplot(x = free.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
+qplot(x = total.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
+qplot(x = sulphates, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
+
+```
+
+We can see in all variables, that all wines tend to go to a value. This value is 
+liekly the perfect value for wine. For example in sulphates is between 0.5 and 
+0.7, in chlorides around 0.08 and residual.sugar around 2.
+
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+There are 1599 Red Wines analysed in 12 different characteristics 
+(fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, 
+free.sulfur.dioxide, total.sulfur.dioxidedensity, pH, sulphates, alcohol and
+quality)
+
+### What is/are the main feature(s) of interest in your dataset?
+The main feature is the quality. It is interesting to caompare any 
+characteristic of the wine depending on the final quality.
+
+### What other features in the dataset do you think will help support your 
+investigation into your feature(s) of interest?
+I use all the features of the wine to compare theis variation of them with the
+quality or bewteen them.
+
+### Did you create any new variables from existing variables in the dataset?
+
+### Of the features you investigated, were there any unusual distributions? Did 
+you perform any operations on the data to tidy, adjust, or change the form of 
+the data? If so, why did you do this?
+Since the data is cleaned, I didn't perfomr any cleaning process. I realized 
+most of graphs are right skewed. And graphs with vlaues of the highest quality
+do not have a defined shape. It might be because of the lack of samples.
+
+# Bivariate Plots Section
+> It might be interesting a lot of correlations. As we have 12 
+variables we will try with several combinations.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots}
+
+ggplot(aes(x= pH, y = alcohol) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+
+ggplot(aes(x= quality, y = alcohol) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+
+ggplot(aes(x= density, y = residual.sugar) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality'))
+
+ggplot(aes(x= density, y = sulphates) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1)+
+  scale_color_brewer(type='seq',
+                   guide=guide_legend(title='Quality')) 
+
+
+```
+
+I displayed four graphs showing the relation between 2 variables. As you can see
+there is not any visual relation between any of them but between quality and 
+alcohol. It seems that the more alcohold the better quality.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+quality_groups <- group_by(pf[2:13], quality)     # first groups data by age
+
+pf.by_quality <- summarise(quality_groups,                 # then summarizes
+          volatile.acidity_mean = mean(volatile.acidity),     
+          fixed.acidity_mean = mean(fixed.acidity),     
+          residual.sugar_mean = mean(residual.sugar),     
+          chlorides_mean = mean(chlorides),    
+          free.sulfur.dioxide_mean = mean(free.sulfur.dioxide),     
+          total.sulfur.dioxide_mean = mean(total.sulfur.dioxide),     
+          sulphates_mean = mean(sulphates),     
+          density_mean = mean(density),     
+          alcohol_mean = mean(alcohol),     
+          pH_mean = mean(pH),     
+          n = n()                                      # number of items in each group
+          )
+
+pf.by_quality <- arrange(pf.by_quality, quality) # and sort by age
+
+pf.by_quality
+
+
+```
+
+We can see a mean table of each variable separated by quality level. We will see
+easily correlation in some of them like chlorides_mean which decrease when the
+quality decrease, or pH with a similar behaviour. We will display this graphs 
+below.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE}
+
+ ggplot(aes(factor(quality), alcohol), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+
+ ggplot(aes(factor(quality), volatile.acidity), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+ 
+ ggplot(aes(factor(quality), free.sulfur.dioxide), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+ 
+ ggplot(aes(factor(quality), sulphates), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+ 
+ ggplot(aes(factor(quality), pH), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+ 
+ ggplot(aes(factor(quality), density), data = pf[2:13]) +
+  geom_jitter( alpha = .3)  +
+  geom_boxplot( alpha = .5,color = 'blue') +
+  stat_summary(fun.y = "mean", geom = "point", color = "red", shape = 8, size = 4)
+
+```
+
+As we saw in the plot we can see correlations between two variables easily.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+cor(pf[2:13]$alcohol, pf[2:13]$density)
+cor(pf[2:13]$residual.sugar, pf[2:13]$density)
+cor(pf[2:13]$fixed.acidity, pf[2:13]$density)
+cor(pf[2:13]$pH, pf[2:13]$density)
+cor(pf[2:13]$alcohol, pf[2:13]$volatile.acidity)
+cor(pf[2:13]$residual.sugar, pf[2:13]$volatile.acidity)
+
+```
+
+There is barely a correlation between residual sugar and volatile acidity, as we
+expected. However we can find a correlation of 0.668 between density and acidity
+which means that the bigger density the wine will be more acid. Alcohol and 
+density has a inverse correlation, it means the more alcohol the less dense the 
+wine is.
+It happen the same with alcohol and acidity to lesser extent.
+
+```{r  echo=FALSE, message=FALSE, warning=FALSE }
+
+q1 <- ggplot(aes(x = volatile.acidity_mean, y = pH_mean), data = pf.by_quality) +
+  geom_line() +
+  geom_smooth()
+
+q2 <- ggplot(aes(x = volatile.acidity_mean, y = free.sulfur.dioxide_mean), data = pf.by_quality) +
+  geom_line() +
+  geom_smooth()
+
+q3 <- ggplot(aes(x = density_mean, y = pH_mean), data = pf.by_quality) +
+  geom_line() +
+  geom_smooth()
+
+q4 <- ggplot(aes(x = density_mean, y = fixed.acidity_mean), data = pf.by_quality) +
+  geom_line() +
+  geom_smooth()
+
+library(gridExtra)
+grid.arrange(q1,q2,q3,q4,ncol = 1)
+
+```
+
+This three last graphs show the relation between pHacidity,sulfur 
+dioxide-acidity and pH-density. We see relation betwen pH and acidity, it is
+a left skewed graph while the second sample is a right skewed graph.
+
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the 
+investigation. How did the feature(s) of interest vary with other features in 
+the dataset?
+As we have said before, there are a lot of correlations between variables. One 
+example is acidity and density. We got a correlation of 0.67. It seems that the
+more dense is the wine the taste get more acid.
+
+
+### Did you observe any interesting relationships between the other features 
+(not the main feature(s) of interest)?
+We can see many  correlations between most of variables. For example residual 
+sugar and density, which seems logical as the more sugar more dense. Or pH and
+density.
+
+### What was the strongest relationship you found?
+Density and acididity was the strongest one. 
+
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots}
+
+ggplot(aes(x = alcohol, y = citric.acid, color = factor(quality)), data = pf[2:13]) +
+      geom_point(alpha = 0.8, size = 2) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality'))
+
+ggplot(pf[2:13], aes(x = sulphates, y = alcohol, colour=factor(quality))) + 
+  geom_density2d(bins=2) + 
+  scale_color_brewer() + 
+  geom_point(color="black", alpha=0.1) 
+
+ggplot(aes(x = volatile.acidity, y = residual.sugar, color = factor(quality)), data = pf[2:13]) +
+      geom_point(alpha = 0.8, size = 2) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality'))
+
+```
+
+First graph we can appreciate a relation between quality and alcohol, as most of
+white points are wines with low alcohol. However it is not easy to see a 
+relation between density and pH. Density distribution does not depends on pH.
+
+In the second graph seems clear, good quality winehas the biggest concentration 
+of alcohol and sulphate.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the 
+investigation. Were there features that strengthened each other in terms of 
+looking at your feature(s) of interest?
+As we can see in last three graphs, alcohol, pH, sulphates and residual.sugar 
+are important for wine quality however ther is not a perfect value for each
+feature. The quality level depends on the sum up of every feature.
+We can see high contained in alcohol and low residual.sugar with high quality
+and oposite.
+
+### Were there any interesting or surprising interactions between features?
+Personally, I expected that all features tend to a perfect value. But as I said 
+in last question, wine quelity is a summ of features.
+
+------
+
+# Final Plots and Summary
+> **Tip**: You've done a lot of exploration and have built up an understanding
+of the structure of and relationships between the variables in your dataset.
+Here, you will select three plots from all of your previous exploration to
+present here as a summary of some of your most interesting findings. Make sure
+that you have refined your selected plots for good titling, axis labels (with
+units), and good aesthetic choices (e.g. color, transparency). After each plot,
+make sure you justify why you chose each plot by describing what it shows.
+
+### Plot One
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
+qplot(factor(quality), data=pf[2:13], geom="bar", main = "Wines distribution")+
+  xlab("Quality") + 
+  ylab("Number of wines")
+
+```
+
+### Description One
+This first graph represent the number of wines analyzed in each quality. We can
+see most of wines have a quality of 5 or 6, meanwhile the qualities 3, 4 and 8
+have barely wines.
+
+### Plot Two
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
+q1 <- ggplot(aes(x = quality, y = pH), data = pf[2:13]) +
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
+      xlab("Quality") + 
+      ylab("pH") +
+      ggtitle("Quality / pH")
+
+q2 <- ggplot(aes(x = quality, y = free.sulfur.dioxide), data = pf[2:13]) +
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
+      xlab("Quality") + 
+      ylab("Free Sulfur Dioxide (eq/L)") +
+      ggtitle("Quality / SO2 Mean")
+
+
+q3 <- ggplot(aes(x = quality, y = alcohol), data = pf[2:13]) +
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
+      xlab("Quality") + 
+      ylab("Alcohol (%)") +
+      ggtitle("Quality / Alcohol (%)")
+
+q4 <- ggplot(aes(x = quality, y = fixed.acidity), data = pf[2:13]) +
+      geom_point(alpha = 0.3, size = 1) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
+      xlab("Quality") + 
+      ylab("Fixed Acidity (g/L)") +
+      ggtitle("Quality / Fixed Acidity")
+
+library(gridExtra)
+grid.arrange(q1,q2,q3,q4,ncol = 2)
+
+```
+
+
+
+### Description Two
+We can see 4 scatter plot comparing the quality with 4 different features,
+pH, Free Sulfur Dioxide, Alcohol and Fixed Acidity. Here we can see the most
+likely value for each level.
+
+### Plot Three
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
+ggplot(aes(x=pH, y=alcohol, color=factor(quality)), data = pf[2:13]) + 
+      geom_point(alpha = 0.8, size = 2) +
+      geom_smooth(method = "lm", se = FALSE,size=1)  +
+      scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
+      xlab("pH") + 
+      ylab("Alcohol Concentration (Degree)") +
+      labs(color = "Quality") +
+      ggtitle("pH, Alcohol, Quality and Density Graph Relation")
+
+
+
+```
+
+### Description Three
+Here we can appreciate many relations. We can clearly see whiter colors are 
+below while darker colors are above, it means quality and alcohol has a 
+proportional relation. Ph does not seem to be related to any other parameter and
+density seems to be lower with higher alcohol concentration.
+
+------
+
+# Reflection
+The wines data set contains information on 1599 wines across twelve variables 
+from around 2009. Being an example dataset I expected clear relations between 
+its features, however barely you can find some relations. First thing surprised 
+me was that most of wines measured had a quality of 5 or 6 while qualities as 3,
+4 or 8 have very few samples. I guess it means that most of wines has a normal 
+quality and just a few have a high or low quality.
+
+The most cleare relations I saw was the alcohol concentration, it is related 
+with quality and with density.
+
+Another thing is every feature has a perfect value indicidually, as you can see
+in the firsts graphs where I compare quality with every feature. However, when
+you have a best quality wine, these values change. It is like a lower value in 
+alcohol can compensate a higher value in sugar.

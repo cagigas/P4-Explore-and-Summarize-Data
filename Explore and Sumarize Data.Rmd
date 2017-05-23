@@ -18,6 +18,8 @@ output: html_document
 #install.packages("knitr", dependencies = T)
 #install.packages("dplyr", dependencies = T)
 #install.packages('gridExtra') 
+#install.packages("GGally")
+source("https://raw.githubusercontent.com/briatte/ggcorr/master/ggcorr.R")
 
 library(gridExtra) 
 library(ggplot2)
@@ -25,7 +27,10 @@ library(knitr)
 library(dplyr)
 
 ```
-First of all, we will load the data set Red Wine into pf, and see some basic information.
+
+First of all, we will load the data set Red Wine into pf, and see some basic
+information.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Load_the_Data}
 
 pf <- read.csv('wineQualityReds.csv')# Load the Data
@@ -53,6 +58,10 @@ forget to add a comment after each plot or closely-related group of plots!
 There should be multiple code chunks and text sections; the first one below is
 just to help you get started.
 
+We will start showing one of the most important features, which is the quality
+of the wine. With this plot we weill have an idea about what is the most common
+quality in wines.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 by(pf[2:13]$density, pf[2:13]$quality, median)
@@ -62,18 +71,25 @@ by(pf[2:13]$pH, pf[2:13]$quality, median)
 qplot(factor(quality), data=pf[2:13], geom="bar")
 
 ```
+
 As you can see, density and alcohol do not have a dependency on que quality of 
 the wines, however quality seems to improve when Ph mean decrease. It is useful 
 to know the number of observation for each quality.
 
 Histograms
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 grid.arrange( ggplot(aes(x=alcohol),data=pf[2:13]) +
   geom_histogram( binwidth=0.1) + ggtitle("Histogram of Alcohol (%)"), ggplot(aes(x=1, y=alcohol),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
+summary(pf[2:13]$alcohol)
+qplot(x = alcohol, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
+
 ```
+
 Alcohol distribution is a right skewed, concentrated in 7.5. We can see a few 
-outliers.
+outliers. It seems to be more common the low alcohol wines than the high alcohol
+wine. As you can see the most common wines have unde 10 grades.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -81,20 +97,29 @@ grid.arrange( ggplot(aes(x=total.sulfur.dioxide),data=pf[2:13]) +
   geom_histogram( binwidth=10) + ggtitle("Histogram of total sulfur dioxide (mg/dm^3)"), ggplot(aes(x=1, y=total.sulfur.dioxide),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$total.sulfur.dioxide)
+qplot(x = total.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
+
 ```
+
 Sulfur Dioxide distribution is a right skewed, concentrated in 20. We can see
-multiples outliers, specially 2.
+multiples outliers, specially 2. With the Sulfur Dioxide happens the same as 
+with alcohol. Most of wines have a low quantity of sulfur dioxide, the peak is
+at 40g/dm3.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 grid.arrange( ggplot(aes(x=fixed.acidity),data=pf[2:13]) +
-  geom_histogram( binwidth=0.5) + ggtitle("Histogram of fixed acidity (g/dm^3)"), ggplot(aes(x=1, y=fixed.acidity),data=pf[2:13]) +
+  geom_histogram( binwidth=0.1) + ggtitle("Histogram of fixed acidity (g/dm^3)"), ggplot(aes(x=1, y=fixed.acidity),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$fixed.acidity)
+qplot(x = fixed.acidity, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
 
 ```
+
 We can see the fixed acidity is a right skewed graphic concentred in 7. We can
-see multiple outliers.
+see multiple outliers. Fixed acidity has a similar distribution as the other 
+features with its peak at 7g/dm3.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -102,10 +127,14 @@ grid.arrange( ggplot(aes(x=volatile.acidity),data=pf[2:13]) +
   geom_histogram( binwidth=0.01) + ggtitle("Histogram of volatile acidity (g/dm^3)"), ggplot(aes(x=1, y=volatile.acidity),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$volatile.acidity)
+qplot(x = volatile.acidity, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
 
 ```
+
 The distribution of volatile acidity is a bimodal right skewed, concentred in 
-0.35 and 0.6. There are a few outliers.
+0.35 and 0.6. There are a few outliers. Volatile acidity has a similar 
+distribution as the other features, however volatile acidity has a broad peak
+between 0.4 and 0.7 g/dm3.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -113,9 +142,12 @@ grid.arrange( ggplot(aes(x=citric.acid),data=pf[2:13]) +
   geom_histogram( binwidth=0.01) + ggtitle("Histogram of citric acid (g/dm^3)"), ggplot(aes(x=1, y=citric.acid),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$citric.acid)
+qplot(x = citric.acid, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
 
 ```
-Citrid Acid is a not normal distribution. Only an outlier.
+
+Citrid Acid is a not normal distribution. Only an outlier. It doesn't seem to be
+a common citrid acid for the wines in the data set.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -123,10 +155,13 @@ grid.arrange( ggplot(aes(x=residual.sugar),data=pf[2:13]) +
   geom_histogram( binwidth=0.1) + ggtitle("Histogram of residual sugar (g/dm^3)"), ggplot(aes(x=1, y=residual.sugar),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$residual.sugar)
+qplot(x = residual.sugar, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
+
 
 ```
-Residual Sugar seems to be a right skewed distribution, concentrated in 2. 
-Several outliers.
+
+Several outliers. As most of the features, it is a right skewed distribution 
+concentrated in 2 g/dm3. 
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -134,10 +169,14 @@ grid.arrange( ggplot(aes(x=chlorides),data=pf[2:13]) +
   geom_histogram( binwidth=0.001) + ggtitle("Histogram of chlorides (g/dm^3)"), ggplot(aes(x=1, y=chlorides),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$chlorides)
+qplot(x = chlorides, data = pf[2:13], binwidth = 0.001, geom = "freqpoly")
+
 
 ```
+
 Chloricles is right skewed distribution as well, concentrated in 0.08. Several
-outliers.
+outliers. Chloricles has a similar distribution as the other 
+features with its peak at 0.08 g/dm3.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -145,10 +184,14 @@ grid.arrange( ggplot(aes(x=free.sulfur.dioxide),data=pf[2:13]) +
   geom_histogram( binwidth=1) + ggtitle("Histogram of free sulfur dioxide (mg/dm^3)"), ggplot(aes(x=1, y=free.sulfur.dioxide),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$free.sulfur.dioxide)
+qplot(x = free.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
+
 
 ```
+
 Free Sulfur Dioxide is a right skewed distribution concentrated in 6. We can see
-a few outliers.
+a few outliers. Free Sulfur Dioxide has a similar distribution as the other 
+features with its peak at 10 mg/dm3.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -156,30 +199,41 @@ grid.arrange( ggplot(aes(x=density),data=pf[2:13]) +
   geom_histogram( binwidth=0.0001) + ggtitle("Histogram of density (g/cm^3)"), ggplot(aes(x=1, y=density),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$density)
+qplot(x = density, data = pf[2:13], binwidth = 0.0001, geom = "freqpoly")
+
 
 ```
+
 We can see the density distribution is normal and concentrated in 0.997. We can
 see a few outliers.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 grid.arrange( ggplot(aes(x=sulphates),data=pf[2:13]) +
-  geom_histogram( binwidth=0.010) + ggtitle("Histogram of sulphates (g/dm^3)"), ggplot(aes(x=1, y=sulphates),data=pf[2:13]) +
+  geom_histogram( binwidth=0.01) + ggtitle("Histogram of sulphates (g/dm^3)"), ggplot(aes(x=1, y=sulphates),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$sulphates)
+qplot(x = sulphates, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
+
 
 ```
+
 Sulphates distribution is right skewed, concentrated in 0.6. Several outliers.
+Free Sulfur Dioxide has a similar distribution as the other features with its 
+peak at 0.6 g/dm3.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
 grid.arrange( ggplot(aes(x=pH),data=pf[2:13]) +
-  geom_histogram( binwidth=0.010) + ggtitle("Histogram of pH"), ggplot(aes(x=1, y=pH),data=pf[2:13]) +
+  geom_histogram( binwidth=0.01) + ggtitle("Histogram of pH"), ggplot(aes(x=1, y=pH),data=pf[2:13]) +
   geom_boxplot( ), nrow =1)
 summary(pf[2:13]$pH)
+qplot(x = pH, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
+
 
 
 ```
+
 pH distribution is normal concentrated in 3.3. We can appreciate a few outliers.
 
 We can see above a simple histogram for each feature included in the analysis.  
@@ -206,22 +260,6 @@ to lack of data. Density seems to have the same tendency, however alcohol
 have a flater graphs, where you can see a tendency in quality 5 (about 11 
 degrees), meanwhile quality 7 is between 9 and 13 or quality 6 is between
 8 and 13.
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
-
-qplot(x = volatile.acidity, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
-qplot(x = fixed.acidity, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
-qplot(x = residual.sugar, data = pf[2:13], binwidth = 0.1, geom = "freqpoly")
-qplot(x = chlorides, data = pf[2:13], binwidth = 0.001, geom = "freqpoly")
-qplot(x = free.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
-qplot(x = total.sulfur.dioxide, data = pf[2:13], binwidth = 1, geom = "freqpoly")
-qplot(x = sulphates, data = pf[2:13], binwidth = 0.01, geom = "freqpoly")
-
-```
-
-We can see in all variables, that all wines tend to go to a value. This value is 
-liekly the perfect value for wine. For example in sulphates is between 0.5 and 
-0.7, in chlorides around 0.08 and residual.sugar around 2.
 
 
 # Univariate Analysis
@@ -254,30 +292,67 @@ do not have a defined shape. It might be because of the lack of samples.
 > It might be interesting a lot of correlations. As we have 12 
 variables we will try with several combinations.
 
+We will start the bivariate section with a correlation analysis that can help
+us to decide which features are more likely to have a relation.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+
+ggcorr(pf[2:13], nbreaks = 4, palette = "RdGy", label = TRUE, label_size = 3, label_color = "white")
+
+```
+
+As we can see on the above plot, the feature with most correlation are free.
+sulfur.dioxide-total.sulfur.dioxide, fixed.acidity-citrid.acid, 
+fixed.acidity-pH and density-dixed.acidity. 
+
+Along this analysis we will try to focus on the features, but we will study
+other features as well. We weill start with a scatter plot comparing the 
+features with the highest grade of correlation.
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots}
 
-ggplot(aes(x= pH, y = alcohol) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+ggplot(aes(x= total.sulfur.dioxide, y = free.sulfur.dioxide) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
   scale_color_brewer(type='seq',
                    guide=guide_legend(title='Quality'))
 
-ggplot(aes(x= quality, y = alcohol) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+ggplot(aes(x= fixed.acidity, y = density) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
   scale_color_brewer(type='seq',
                    guide=guide_legend(title='Quality'))
 
-ggplot(aes(x= density, y = residual.sugar) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
+ggplot(aes(x= fixed.acidity, y = citric.acid) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1) +
   scale_color_brewer(type='seq',
                    guide=guide_legend(title='Quality'))
 
-ggplot(aes(x= density, y = sulphates) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1)+
+ggplot(aes(x= pH, y = fixed.acidity) , data = pf[2:13]) + geom_point(alpha = 0.3, size = 1) + geom_smooth(method = "lm", se = FALSE,size=1)+
   scale_color_brewer(type='seq',
                    guide=guide_legend(title='Quality')) 
 
 
 ```
 
-I displayed four graphs showing the relation between 2 variables. As you can see
-there is not any visual relation between any of them but between quality and 
-alcohol. It seems that the more alcohold the better quality.
+I displayed four graphs showing the relation between 2 variables. We can see
+easily a correlation between all the features compared. 
+
+Total Sulfur Dioxide - Free Sulfur Dioxide 
+The bigger Total Sulfur Dioxide is, the bigger Free Sulfur Dioxide is. It seems 
+to be a proportional relation between these features.
+
+Density - Fixed Acidity 
+The bigger Density is, the bigger Fixed Acidity is. It seems to be a 
+proportional relation between these features.
+
+Citrid Acid - Fixed Acidity 
+The bigger Density is, the bigger Fixed Acidity is. It seems to be a 
+proportional relation between these features.
+
+pH - Fixed Acidity 
+The bigger Density is, the smaller Fixed Acidity is. It seems to be a 
+proportional inverse relation between these features.
+
+The result show what we have see with the correlation analysis, Fixed Acidity
+and pH has a inverse proportional correlation meanwhile the other analysis has
+a poportional correlation.
+
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -294,7 +369,7 @@ pf.by_quality <- summarise(quality_groups,                 # then summarizes
           density_mean = mean(density),     
           alcohol_mean = mean(alcohol),     
           pH_mean = mean(pH),     
-          n = n()                                      # number of items in each group
+          n = n()     # number of items in each group
           )
 
 pf.by_quality <- arrange(pf.by_quality, quality) # and sort by age
@@ -343,7 +418,9 @@ below.
 
 ```
 
-As we saw in the plot we can see correlations between two variables easily.
+One of the most interesting variables is the quality. In the plot above, I 
+compare this features with the other. We can see thanks to the box plot the 
+distribution of every feature divided by quality.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 cor(pf[2:13]$alcohol, pf[2:13]$density)
@@ -466,6 +543,7 @@ units), and good aesthetic choices (e.g. color, transparency). After each plot,
 make sure you justify why you chose each plot by describing what it shows.
 
 ### Plot One
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
 qplot(factor(quality), data=pf[2:13], geom="bar", main = "Wines distribution")+
   xlab("Quality") + 
@@ -479,9 +557,10 @@ see most of wines have a quality of 5 or 6, meanwhile the qualities 3, 4 and 8
 have barely wines.
 
 ### Plot Two
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Two}
 q1 <- ggplot(aes(x = quality, y = pH), data = pf[2:13]) +
-      geom_point(alpha = 0.3, size = 1) +
+      geom_jitter( alpha = .1)  +
       geom_smooth(method = "lm", se = FALSE,size=1)  +
       scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
       xlab("Quality") + 
@@ -489,7 +568,7 @@ q1 <- ggplot(aes(x = quality, y = pH), data = pf[2:13]) +
       ggtitle("Quality / pH")
 
 q2 <- ggplot(aes(x = quality, y = free.sulfur.dioxide), data = pf[2:13]) +
-      geom_point(alpha = 0.3, size = 1) +
+      geom_jitter( alpha = .1)  +
       geom_smooth(method = "lm", se = FALSE,size=1)  +
       scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
       xlab("Quality") + 
@@ -498,15 +577,17 @@ q2 <- ggplot(aes(x = quality, y = free.sulfur.dioxide), data = pf[2:13]) +
 
 
 q3 <- ggplot(aes(x = quality, y = alcohol), data = pf[2:13]) +
-      geom_point(alpha = 0.3, size = 1) +
+      geom_jitter( alpha = .1)  +
       geom_smooth(method = "lm", se = FALSE,size=1)  +
       scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
       xlab("Quality") + 
       ylab("Alcohol (%)") +
       ggtitle("Quality / Alcohol (%)")
 
+
+
 q4 <- ggplot(aes(x = quality, y = fixed.acidity), data = pf[2:13]) +
-      geom_point(alpha = 0.3, size = 1) +
+      geom_jitter( alpha = .1)  +
       geom_smooth(method = "lm", se = FALSE,size=1)  +
       scale_color_brewer(type='seq', guide=guide_legend(title='Quality')) +
       xlab("Quality") + 
@@ -526,6 +607,7 @@ pH, Free Sulfur Dioxide, Alcohol and Fixed Acidity. Here we can see the most
 likely value for each level.
 
 ### Plot Three
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_Three}
 ggplot(aes(x=pH, y=alcohol, color=factor(quality)), data = pf[2:13]) + 
       geom_point(alpha = 0.8, size = 2) +

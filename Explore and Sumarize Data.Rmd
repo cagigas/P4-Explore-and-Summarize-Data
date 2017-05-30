@@ -81,11 +81,11 @@ Histograms
 
 ```{r}
 grid.arrange( ggplot(aes(x=alcohol),data=pf) +
-  geom_histogram( binwidth=0.1) + 
+  geom_histogram( binwidth=0.5) + 
   ggtitle("Histogram of Alcohol (%)"), ggplot(aes(x=1, y=alcohol),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$alcohol)
-qplot(x = alcohol, data = pf, binwidth = 0.1, geom = "freqpoly")
+qplot(x = alcohol, data = pf, binwidth = 0.5, geom = "freqpoly")
 
 ```
 
@@ -101,7 +101,7 @@ grid.arrange( ggplot(aes(x=total.sulfur.dioxide),data=pf) +
   ggplot(aes(x=1, y=total.sulfur.dioxide),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$total.sulfur.dioxide)
-qplot(x = total.sulfur.dioxide, data = pf, binwidth = 1, geom = "freqpoly")
+qplot(x = total.sulfur.dioxide, data = pf, binwidth = 10, geom = "freqpoly")
 
 ```
 
@@ -114,12 +114,12 @@ at 40g/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=fixed.acidity),data=pf) +
-  geom_histogram( binwidth=0.1) + 
+  geom_histogram( binwidth=1) + 
   ggtitle("Histogram of fixed acidity (g/dm^3)"),
   ggplot(aes(x=1, y=fixed.acidity),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$fixed.acidity)
-qplot(x = fixed.acidity, data = pf, binwidth = 0.1, geom = "freqpoly")
+qplot(x = fixed.acidity, data = pf, binwidth = 1, geom = "freqpoly")
 
 ```
 
@@ -130,12 +130,12 @@ features with its peak at 7g/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=volatile.acidity),data=pf) +
-  geom_histogram( binwidth=0.01) + 
+  geom_histogram( binwidth=0.05) + 
   ggtitle("Histogram of volatile acidity (g/dm^3)"), 
   ggplot(aes(x=1, y=volatile.acidity),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$volatile.acidity)
-qplot(x = volatile.acidity, data = pf, binwidth = 0.01, geom = "freqpoly")
+qplot(x = volatile.acidity, data = pf, binwidth = 0.05, geom = "freqpoly")
 
 ```
 
@@ -147,12 +147,12 @@ between 0.4 and 0.7 g/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=citric.acid),data=pf) +
-  geom_histogram( binwidth=0.01) +
+  geom_histogram( binwidth=0.05) +
   ggtitle("Histogram of citric acid (g/dm^3)"),
   ggplot(aes(x=1, y=citric.acid),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$citric.acid)
-qplot(x = citric.acid, data = pf, binwidth = 0.01, geom = "freqpoly")
+qplot(x = citric.acid, data = pf, binwidth = 0.05, geom = "freqpoly")
 
 ```
 
@@ -163,12 +163,12 @@ a common citrid acid for the wines in the data set.
 
 grid.arrange( ggplot(aes(x=residual.sugar),data=pf) + 
               coord_cartesian(xlim = c(1,5)) +
-  geom_histogram( binwidth=0.1) + 
+  geom_histogram( binwidth=0.5) + 
   ggtitle("Histogram of residual sugar (g/dm^3)"),
   ggplot(aes(x=1, y=residual.sugar),data=pf) +
   geom_boxplot( ) , nrow =1)
 summary(pf$residual.sugar)
-qplot(x = residual.sugar, data = pf, binwidth = 0.1, geom = "freqpoly") +
+qplot(x = residual.sugar, data = pf, binwidth = 0.5, geom = "freqpoly") +
   coord_cartesian(xlim = c(1,5))
 
 
@@ -181,12 +181,12 @@ concentrated in 2 g/dm3.
 
 grid.arrange( ggplot(aes(x=chlorides),data=pf) + 
                 coord_cartesian(xlim = c(0,0.2)) +
-  geom_histogram( binwidth=0.005) +
+  geom_histogram( binwidth=0.01) +
   ggtitle("Histogram of chlorides (g/dm^3)"),
   ggplot(aes(x=1, y=chlorides),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$chlorides)
-qplot(x = chlorides, data = pf, binwidth = 0.005, geom = "freqpoly") +
+qplot(x = chlorides, data = pf, binwidth = 0.01, geom = "freqpoly") +
   coord_cartesian(xlim = c(0,0.2))
 
 
@@ -199,12 +199,12 @@ features with its peak at 0.08 g/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=free.sulfur.dioxide),data=pf) +
-  geom_histogram( binwidth=1) +
+  geom_histogram( binwidth=5) +
   ggtitle("Histogram of free sulfur dioxide (mg/dm^3)"),
   ggplot(aes(x=1, y=free.sulfur.dioxide),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$free.sulfur.dioxide)
-qplot(x = free.sulfur.dioxide, data = pf, binwidth = 1, geom = "freqpoly")
+qplot(x = free.sulfur.dioxide, data = pf, binwidth = 5, geom = "freqpoly")
 
 
 ```
@@ -216,12 +216,12 @@ features with its peak at 10 mg/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=density),data=pf) +
-  geom_histogram( binwidth=0.0001) +
+  geom_histogram( binwidth=0.001) +
   ggtitle("Histogram of density (g/cm^3)"),
   ggplot(aes(x=1, y=density),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$density)
-qplot(x = density, data = pf, binwidth = 0.0001, geom = "freqpoly")
+qplot(x = density, data = pf, binwidth = 0.001, geom = "freqpoly")
 
 
 ```
@@ -233,12 +233,12 @@ see a few outliers.
 
 grid.arrange( ggplot(aes(x=sulphates),data=pf) +
   coord_cartesian(xlim = c(0,1.5)) +
-  geom_histogram( binwidth=0.01) +
+  geom_histogram( binwidth=0.1) +
   ggtitle("Histogram of sulphates (g/dm^3)"),
   ggplot(aes(x=1, y=sulphates),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$sulphates)
-qplot(x = sulphates, data = pf, binwidth = 0.01, geom = "freqpoly") +
+qplot(x = sulphates, data = pf, binwidth = 0.1, geom = "freqpoly") +
   coord_cartesian(xlim = c(0,1.5))
 
 
@@ -251,12 +251,12 @@ peak at 0.6 g/dm3.
 ```{r}
 
 grid.arrange( ggplot(aes(x=pH),data=pf) +
-  geom_histogram( binwidth=0.01) +
+  geom_histogram( binwidth=0.1) +
   ggtitle("Histogram of pH"),
   ggplot(aes(x=1, y=pH),data=pf) +
   geom_boxplot( ), nrow =1)
 summary(pf$pH)
-qplot(x = pH, data = pf, binwidth = 0.01, geom = "freqpoly")
+qplot(x = pH, data = pf, binwidth = 0.1, geom = "freqpoly")
 
 
 
@@ -573,7 +573,7 @@ in last question, wine quelity is a summ of features.
 ------
 
 # Final Plots and Summary
-> **Tip**: You've done a lot of exploration and have built up an understanding
+You've done a lot of exploration and have built up an understanding
 of the structure of and relationships between the variables in your dataset.
 Here, you will select three plots from all of your previous exploration to
 present here as a summary of some of your most interesting findings. Make sure
